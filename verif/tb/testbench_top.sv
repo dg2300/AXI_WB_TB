@@ -1,16 +1,6 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 
-`include "verif/tb_axi_interface.sv"
-`include "verif/tb/seqlib/sequence.sv"
-`include "verif/tb/env/sequencer.sv"
-`include "verif/tb/env/monitor.sv"
-`include "verif/tb/env/driver.sv"
-`include "verif/tb/env/agent.sv"
-`include "verif/tb/env/scoreboard.sv"
-`include "verif/tb/env/env.sv"
-`include "verif/test/new_test/test_1.sv"
-
 module top;
   bit clock;
   bit reset;
