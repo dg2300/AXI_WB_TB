@@ -6,3 +6,8 @@
 #setenv VCS_HOME <>/synopsys/vcsmx/Q-2020.03/
 #setenv PATH $VCS_HOME/bin:$PATH 
 #setenv UVM_HOME <>/accellera/uvm/1.2b/
+
+
+#TOOK RTL files from : https://github.com/alexforencich/verilog-wishbone.git 
+#AXI STREAM spec : https://developer.arm.com/documentation/ihi0051/b 
+
