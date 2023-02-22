@@ -38,7 +38,7 @@ class axi_driver extends uvm_driver#(axi_seq_item) ;
 
 
  	virtual task drive_item(); 
-  
+  bit[7:0] lsb =0 , msb =7 ;
     `uvm_info(get_type_name(),$sformatf("Inside Drive item task"),UVM_LOW); 
     @(posedge axi_interface_vif.clock);
       `uvm_info(get_type_name(),$sformatf("DEBUG clock came"),UVM_LOW);
@@ -46,9 +46,61 @@ class axi_driver extends uvm_driver#(axi_seq_item) ;
         wait(!axi_interface_vif.reset);
         `uvm_info(get_type_name(),$sformatf("DEBUG reset came"),UVM_LOW);
           `uvm_info(get_type_name(),$sformatf("Sending tvalid == %h , tdata == %h",axi_seq_item_h.input_axis_tvalid,axi_seq_item_h.input_axis_tdata),UVM_LOW);
-          axi_interface_vif.tb_input_axis_tvalid <= axi_seq_item_h.input_axis_tvalid;
-          axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata ;  
-    
-     
-  endtask 
+          `uvm_info(get_type_name(),$sformatf("Sending tdata_req == %h , tdata_address == %h, tdata_data == %h ",axi_seq_item_h.input_axis_tdata_req,axi_seq_item_h.input_axis_tdata_address,axi_seq_item_h.input_axis_tdata_data),UVM_LOW);
+          
+          axi_interface_vif.tb_output_axis_tready <= 'hd1; //added here TODO
+          axi_interface_vif.tb_input_axis_tuser <= 'hd1; //added here TODO   //start of packet
+          axi_interface_vif.tb_input_axis_tvalid <= axi_seq_item_h.input_axis_tvalid; //no need of sequence item for now.
+          
+          axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_req ; //request type 
+ 
+          @(posedge axi_interface_vif.clock);
+            //deassert tuser -> tsuer indicating start of packet is 1 clock cycle pulse
+            axi_interface_vif.tb_input_axis_tuser <= 'hd0;
+
+          
+          lsb =0 ;
+          msb =7 ;
+          //sending address flits - 32 bit wide , 8 bit flits iteration = 4
+            for(int index = 0;index < 4 ; index++)begin
+                 //axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_address[lsb:msb];
+                 axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_address[lsb+:8]; 
+                 `uvm_info(get_type_name(),$sformatf("Sending address flit pos[%d:%d] = %h",lsb,msb,axi_seq_item_h.input_axis_tdata_address[lsb+:8]),UVM_LOW);
+                 lsb = msb+1;
+                 msb = msb+8;
+                 @(posedge axi_interface_vif.clock); //wait for next clock
+            end
+            
+          
+            for(int index = 0;index < 2 ; index++)begin      //FIXME : sending zz data  for 2 clock cycles    
+              axi_interface_vif.tb_input_axis_tdata <= 'hz;  // FIXME : Not sure why these needs to be like this - but it works somehow
+              @(posedge axi_interface_vif.clock);           
+            end
+
+ //DATA works fine           
+            //lsb = 24 ; 
+            //msb = 31 ;
+          lsb =0 ;
+          msb =7 ;
+          //sending data flits - 32 bit wide , 8 bit flits iteration = 4
+            for(int index = 0;index < 4 ; index++)begin
+                 //axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_data[lsb:msb];
+                 //axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_data[msb-:8];
+                 //`uvm_info(get_type_name(),$sformatf("Sending data flit pos[%d:%d] = %h",lsb,msb,axi_seq_item_h.input_axis_tdata_data[msb-:8]),UVM_LOW);
+                 //msb = lsb - 1;
+                 //lsb = (msb+1)-8;
+                 axi_interface_vif.tb_input_axis_tdata <= axi_seq_item_h.input_axis_tdata_data[lsb+:8]; 
+                 `uvm_info(get_type_name(),$sformatf("Sending data flit pos[%d:%d] = %h",lsb,msb,axi_seq_item_h.input_axis_tdata_data[lsb+:8]),UVM_LOW);
+                 lsb = msb+1;
+                 msb = msb+8;
+
+                 if(index == 3) axi_interface_vif.tb_input_axis_tlast <= 'h1; //sending tlast with last data flit
+                 @(posedge axi_interface_vif.clock); //wait for next clock
+            end
+
+      axi_interface_vif.tb_input_axis_tvalid <= 'h0;
+      axi_interface_vif.tb_input_axis_tdata <= 'hdzz;
+      axi_interface_vif.tb_input_axis_tlast <= 'h0;
+      
+    endtask 
 endclass
