@@ -68,15 +68,26 @@ class axi_driver extends uvm_driver#(axi_seq_item) ;
                  `uvm_info(get_type_name(),$sformatf("Sending address flit pos[%d:%d] = %h",lsb,msb,axi_seq_item_h.input_axis_tdata_address[lsb+:8]),UVM_LOW);
                  lsb = msb+1;
                  msb = msb+8;
+                 if(axi_seq_item_h.input_axis_tdata_req==8'hA1) begin 
+                    `uvm_info(get_type_name(),$sformatf("DEBUG No write req"),UVM_LOW); 
+                    if(index == 3) begin 
+                      axi_interface_vif.tb_input_axis_tlast <= 'h1;                      
+                    end 
+                  end//sending tlast with last data flit
                  @(posedge axi_interface_vif.clock); //wait for next clock
             end
             
-          
+         
+            if(axi_seq_item_h.input_axis_tdata_req==8'hA1) begin axi_interface_vif.tb_input_axis_tvalid <= 0; end
+
+
+
+    if(axi_seq_item_h.input_axis_tdata_req==8'hA2) begin
             for(int index = 0;index < 2 ; index++)begin      //FIXME : sending zz data  for 2 clock cycles    
               axi_interface_vif.tb_input_axis_tdata <= 'hz;  // FIXME : Not sure why these needs to be like this - but it works somehow
               @(posedge axi_interface_vif.clock);           
             end
-
+      axi_interface_vif.tb_input_axis_tvalid <= 1;
  //DATA works fine           
             //lsb = 24 ; 
             //msb = 31 ;
@@ -96,11 +107,11 @@ class axi_driver extends uvm_driver#(axi_seq_item) ;
 
                  if(index == 3) axi_interface_vif.tb_input_axis_tlast <= 'h1; //sending tlast with last data flit
                  @(posedge axi_interface_vif.clock); //wait for next clock
-            end
+            end 
+    end
 
       axi_interface_vif.tb_input_axis_tvalid <= 'h0;
       axi_interface_vif.tb_input_axis_tdata <= 'hdzz;
       axi_interface_vif.tb_input_axis_tlast <= 'h0;
-      
     endtask 
 endclass

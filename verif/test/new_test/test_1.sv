@@ -7,6 +7,7 @@ class axi_test extends uvm_test ;
   axi_random_sequence axi_random_sequence_h;
   axi_read_sequence axi_read_sequence_h;
   axi_write_sequence axi_write_sequence_h;
+  axi_b2b_rw_sequence axi_b2b_rw_sequence_h;
  `uvm_component_utils(axi_test); 
 
 
@@ -23,7 +24,8 @@ class axi_test extends uvm_test ;
     env_h = env::type_id::create("env_h",this);
     axi_read_sequence_h = axi_read_sequence::type_id::create("axi_read_sequence_h",this);
     axi_random_sequence_h = axi_random_sequence::type_id::create("axi_random_sequence_h",this);
-    axi_write_sequence_h = axi_write_sequence::type_id::create("axi_read_sequence_h",this);
+    axi_write_sequence_h = axi_write_sequence::type_id::create("axi_write_sequence_h",this);
+    axi_b2b_rw_sequence_h = axi_b2b_rw_sequence::type_id::create("axi_b2b_rw_sequence_h",this);
    endfunction 
 
   //---------------------------------------
@@ -45,12 +47,15 @@ class axi_test extends uvm_test ;
       else if($test$plusargs("AXI_READ_REQ"))begin
         `uvm_info(get_type_name(),$sformatf("DEBUG Sending AXI read req sequence"),UVM_LOW);
         axi_read_sequence_h.start(env_h.axi_agnt.axi_seqr);
+      end else if($test$plusargs("AXI_B2B_REQ"))begin
+        `uvm_info(get_type_name(),$sformatf("DEBUG Sending AXI b2b req sequence"),UVM_LOW);
+        axi_b2b_rw_sequence_h.start(env_h.axi_agnt.axi_seqr);
       end else begin
         `uvm_info(get_type_name(),$sformatf("DEBUG Sending AXI random req sequence"),UVM_LOW);
         axi_random_sequence_h.start(env_h.axi_agnt.axi_seqr);
       end
    
-      //#1000ns;
+      #50ns; //IDLE TIME
     phase.drop_objection(this);
      
     //phase.phase_done.set_drain_time(this,50);

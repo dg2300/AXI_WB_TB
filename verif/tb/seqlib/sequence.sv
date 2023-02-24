@@ -41,9 +41,15 @@ class axi_random_sequence extends uvm_sequence#(axi_seq_item) ;
     super.new(name); 
   endfunction; 
 
- 	task body();  
+ 	virtual task body();  
     //sequence body here 
-    `uvm_do(axi_seq_item_h); 
+      repeat(1) begin
+       axi_seq_item_h = axi_seq_item::type_id::create("axi_seq_item_h");
+       wait_for_grant();
+       axi_seq_item_h.randomize();
+       send_request(axi_seq_item_h);
+       wait_for_item_done();
+      end     
   endtask 
 
 endclass
@@ -73,22 +79,55 @@ endclass
 
  `uvm_object_utils(axi_write_sequence);  
 
-  axi_seq_item axi_seq_item_h;
+  axi_seq_item axi_seq_item_h; 
 
  	//constructor  
  	function new(string name = "axi_write_sequence");  
     super.new(name); 
   endfunction; 
 
- 	task body();  
+   
+ 	virtual task body(); 
+    axi_seq_item_h = axi_seq_item::type_id::create("axi_seq_item_h"); 
     //sequence body here
     `uvm_info(get_type_name(),$sformatf("Inside axi write sequence"),UVM_LOW); 
     `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA2; //WRITE_REQ
-                                 //axi_seq_item_h.input_axis_tdata_address==32'hf7481504;
-                                 //axi_seq_item_h.input_axis_tdata_data==32'hd1d2d3d4;
+                                 axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                 axi_seq_item_h.input_axis_tdata_data==32'hd1d2d3d4;
                                  axi_seq_item_h.input_axis_tvalid==1;    
                                });  
   endtask
 
 endclass
+//*********************************************************************//
+ class axi_b2b_rw_sequence extends uvm_sequence#(axi_seq_item) ; 
 
+ `uvm_object_utils(axi_b2b_rw_sequence);  
+
+  axi_seq_item axi_seq_item_h;
+  axi_random_sequence axi_random_sequence_h;
+
+
+ 	//constructor  
+ 	function new(string name = "axi_write_sequence");  
+    super.new(name); 
+  endfunction; 
+
+   
+ 	virtual task body(); 
+    axi_seq_item_h = axi_seq_item::type_id::create("axi_seq_item_h"); 
+    //sequence body here
+    `uvm_info(get_type_name(),$sformatf("Inside axi b2b rw sequence"),UVM_LOW); 
+    `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA2; //WRITE_REQ
+                                        axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                        axi_seq_item_h.input_axis_tdata_data==32'hd1d2d3d4;
+                                        axi_seq_item_h.input_axis_tvalid==1;    
+                                       }); 
+        #5ns ; 
+     `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA1; //READ_REQ
+                                  axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                  axi_seq_item_h.input_axis_tvalid==1;    
+                                 });
+  endtask
+
+endclass
