@@ -34,7 +34,18 @@ module top;
      .output_axis_tready  (axi_intf.tb_output_axis_tready),
      .output_axis_tlast   (axi_intf.tb_output_axis_tlast),
      .output_axis_tuser   (axi_intf.tb_output_axis_tuser),
-     .busy                (axi_intf.tb_busy)
+     .busy                (axi_intf.tb_busy),     
+     
+     //FIXME :: 
+     .wb_adr_o            (axi_intf.tb_wb_adr_o),
+     .wb_dat_i            (axi_intf.tb_wb_dat_i), //PLAN : connect bfm
+     .wb_dat_o            (axi_intf.tb_wb_dat_o),
+     .wb_we_o             (axi_intf.tb_wb_we_o),
+     .wb_sel_o            (axi_intf.tb_wb_sel_o),
+     .wb_stb_o            (axi_intf.tb_wb_stb_o),
+     .wb_ack_i            (axi_intf.tb_wb_ack_i), //PLAN : connect bfm
+     .wb_err_i            (axi_intf.tb_wb_err_i), //PLAN : connect bfm
+     .wb_cyc_o            (axi_intf.tb_wb_cyc_o)
   );
 
   //something to do with virtual interface TODO: understand

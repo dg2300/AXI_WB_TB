@@ -30,6 +30,17 @@ interface axi_interface #
     logic tb_output_axis_tuser;
     logic tb_busy;
 
+    logic [WB_ADDR_WIDTH-1:0]   tb_wb_adr_o;   // ADR_O() address
+    logic [WB_DATA_WIDTH-1:0]   tb_wb_dat_i;   // DAT_I() data in
+    logic [WB_DATA_WIDTH-1:0]   tb_wb_dat_o;   // DAT_O() data out
+    logic                       tb_wb_we_o;    // WE_O write enable output
+    logic [WB_SELECT_WIDTH-1:0] tb_wb_sel_o;   // SEL_O() select output
+    logic                       tb_wb_stb_o;   // STB_O strobe output
+    logic                       tb_wb_ack_i;   // ACK_I acknowledge input
+    logic                       tb_wb_err_i;   // ERR_I error input
+    logic                       tb_wb_cyc_o;   // CYC_O cycle output
+
+
 endinterface 
  
 
