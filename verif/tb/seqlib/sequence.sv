@@ -70,6 +70,7 @@ class axi_read_sequence extends uvm_sequence#(axi_seq_item) ;
     //sequence body here 
     `uvm_info(get_type_name(),$sformatf("Inside axi read sequence"),UVM_LOW);
     `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA1; //READ_REQ
+                                 axi_seq_item_h.input_axis_tdata_address==32'h041548f7; //FIXME: working address
                                  axi_seq_item_h.input_axis_tvalid==1;    
                                });  
   endtask
@@ -92,7 +93,7 @@ endclass
     //sequence body here
     `uvm_info(get_type_name(),$sformatf("Inside axi write sequence"),UVM_LOW); 
     `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA2; //WRITE_REQ
-                                 axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                 axi_seq_item_h.input_axis_tdata_address==32'h041548f7; //FIXME: working address
                                  axi_seq_item_h.input_axis_tdata_data==32'hd1d2d3d4;
                                  axi_seq_item_h.input_axis_tvalid==1;    
                                });  
@@ -119,13 +120,13 @@ endclass
     //sequence body here
     `uvm_info(get_type_name(),$sformatf("Inside axi b2b rw sequence"),UVM_LOW); 
     `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA2; //WRITE_REQ
-                                        axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                        axi_seq_item_h.input_axis_tdata_address==32'h041548f7; //FIXME: working address
                                         axi_seq_item_h.input_axis_tdata_data==32'hd1d2d3d4;
                                         axi_seq_item_h.input_axis_tvalid==1;    
                                        }); 
         #5ns ; 
      `uvm_do_with(axi_seq_item_h,{axi_seq_item_h.input_axis_tdata_req==8'hA1; //READ_REQ
-                                  axi_seq_item_h.input_axis_tdata_address==32'h041548f7;
+                                  axi_seq_item_h.input_axis_tdata_address==32'h041548f7; //FIXME: working address
                                   axi_seq_item_h.input_axis_tvalid==1;    
                                  });
   endtask

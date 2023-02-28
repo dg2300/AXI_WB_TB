@@ -1,11 +1,17 @@
 $WBTB/rtl/axis_wb_master.v 
 $WBTB/verif/tb_axi_interface.sv
+$WBTB/verif/tb/wb_bfm/bfm_wb_interface.sv 
 $WBTB/verif/tb/seqlib/sequence.sv
 $WBTB/verif/tb/env/sequencer.sv
 $WBTB/verif/tb/env/monitor.sv
 $WBTB/verif/tb/env/driver.sv
 $WBTB/verif/tb/env/agent.sv
 $WBTB/verif/tb/env/scoreboard.sv
+$WBTB/verif/tb/wb_bfm/wb_bfm_seqitem.sv
+$WBTB/verif/tb/wb_bfm/wb_bfm_sequencer.sv
+$WBTB/verif/tb/wb_bfm/bfm_wb_driver.sv
+$WBTB/verif/tb/wb_bfm/bfm_wb_monitor.sv
+$WBTB/verif/tb/wb_bfm/bfm_wb_agent.sv
 $WBTB/verif/tb/env/env.sv
 $WBTB/verif/test/new_test/test_1.sv
 $WBTB/verif/tb/testbench_top.sv
