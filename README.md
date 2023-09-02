@@ -1,5 +1,5 @@
 Basic Testbench to verify AXI stream spec design.
-Added a wishbone BFM to mimic Wishbone design. This code is incomplete , but functional.
+Added a wishbone BFM to mimic Wishbone design. This code is incomplete and requires refinement, but functional.
 
 #TOOK RTL files from : https://github.com/alexforencich/verilog-wishbone.git 
 Only using axi_wb_master as of now.
